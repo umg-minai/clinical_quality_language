@@ -230,6 +230,15 @@ public class Profile {
     }
 
     /**
+     * Total execution time of evaluations contained in this profile.
+     *
+     * @return Total execution time in nanoseconds.
+     */
+    public long getDuration() {
+        return tree.time;
+    }
+
+    /**
      * Records in the profile the fact that the evaluator has entered the supplied activation frame.
      * <p>
      * The activation frame must be fully populated in terms of element being evaluated, context, variables and evaluation start time. The end time has to be omitted, of course, since it becomes available when the evaluator leaves the activation frame.
