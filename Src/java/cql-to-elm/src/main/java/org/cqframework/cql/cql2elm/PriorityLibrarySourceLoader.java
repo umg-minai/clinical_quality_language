@@ -1,5 +1,6 @@
 package org.cqframework.cql.cql2elm;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
 import java.util.*;
@@ -9,8 +10,7 @@ import org.hl7.elm.r1.VersionedIdentifier;
 
 /**
  * Used by LibraryManager to manage a set of library source providers that
- * resolve library includes within CQL. Package private since its not intended
- * to be used outside the context of the instantiating LibraryManager instance.
+ * resolve library includes within CQL.
  */
 public class PriorityLibrarySourceLoader implements LibrarySourceLoader, NamespaceAware, PathAware {
     private final List<LibrarySourceProvider> providers = new ArrayList<>();
@@ -84,6 +84,14 @@ public class PriorityLibrarySourceLoader implements LibrarySourceLoader, Namespa
                 return content;
             }
         }
+
+        /*final var message = new StringBuilder();
+        message.append(String.format("None of the source providers could find library %s, version %s.", libraryIdentifier.getId(), libraryIdentifier.getVersion()));
+        message.append(String.format(" Tried %d provider(s).", getProviders().size()));
+        if (this.path != null) {
+            message.append(String.format(" Providers used library search path `%s'", this.path));
+        }
+        throw new RuntimeException(message.toString());*/
 
         return null;
     }
