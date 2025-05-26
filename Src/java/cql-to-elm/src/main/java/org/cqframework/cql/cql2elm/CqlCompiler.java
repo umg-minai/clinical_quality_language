@@ -149,10 +149,16 @@ public class CqlCompiler {
                     }
                     VersionedIdentifier vi = new VersionedIdentifier().withId(identifierText);
                     if (ldc.versionSpecifier() != null) {
-                        var version = StringEscapeUtils.unescapeCql(
+                        var versionText = StringEscapeUtils.unescapeCql(
                                 ldc.versionSpecifier().getText());
-                        version = version.substring(1, version.length() - 1);
-                        vi.setVersion(version);
+                        // versionText can be less than two characters
+                        // long at this point in case of syntax errors
+                        // such as
+                        // library "Foo" version "1" ("1" instead of '1')
+                        if (versionText.length() >= 2) {
+                            versionText = versionText.substring(1, versionText.length() - 1);
+                            vi.setVersion(versionText);
+                        }
                     }
 
                     return vi;
