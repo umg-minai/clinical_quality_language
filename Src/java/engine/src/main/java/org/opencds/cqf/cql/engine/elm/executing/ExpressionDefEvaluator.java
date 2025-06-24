@@ -9,36 +9,43 @@ import org.opencds.cqf.cql.engine.execution.State;
 public class ExpressionDefEvaluator {
     public static Object internalEvaluate(
             ExpressionDef expressionDef, State state, ElmLibraryVisitor<Object, State> visitor) {
-        boolean isEnteredContext = false;
-        if (expressionDef.getContext() != null) {
-            isEnteredContext = state.enterContext(expressionDef.getContext());
-        }
-        try {
-            state.pushEvaluatedResourceStack();
+        final var cache = state.getCache();
+        if (cache.isExpressionCachingEnabled()) {
             VersionedIdentifier libraryId = state.getCurrentLibrary().getIdentifier();
-            if (state.getCache().isExpressionCachingEnabled()
-                    && state.getCache().isExpressionCached(libraryId, expressionDef.getName())) {
-                var er = state.getCache().getCachedExpression(libraryId, expressionDef.getName());
-                state.getEvaluatedResources().addAll(er.evaluatedResources());
+            if (cache.isExpressionCached(libraryId, expressionDef.getName())) {
+                final var result = cache.getCachedExpression(libraryId, expressionDef.getName());
 
                 // TODO(jmoringe): make public interface
                 final var frame = state.getTopActivationFrame();
                 assert frame.element == expressionDef;
                 frame.isCached = true;
 
-                return er.value();
+                return result.value();
+            } else {
+                state.pushEvaluatedResourceStack();
+                try {
+                    final var value = evaluateWithoutCache(expressionDef, state, visitor);
+                    final var result = new ExpressionResult(value, state.getEvaluatedResources());
+                    state.getCache().cacheExpression(libraryId, expressionDef.getName(), result);
+                    return value;
+                } finally {
+                    state.popEvaluatedResourceStack();
+                }
             }
+        } else {
+            return evaluateWithoutCache(expressionDef, state, visitor);
+        }
+    }
 
-            Object value = visitor.visitExpression(expressionDef.getExpression(), state);
-
-            if (state.getCache().isExpressionCachingEnabled()) {
-                var er = new ExpressionResult(value, state.getEvaluatedResources());
-                state.getCache().cacheExpression(libraryId, expressionDef.getName(), er);
-            }
-
-            return value;
+    private static Object evaluateWithoutCache(
+            final ExpressionDef expressionDef, final State state, final ElmLibraryVisitor<Object, State> visitor) {
+        boolean isEnteredContext = false;
+        if (expressionDef.getContext() != null) {
+            isEnteredContext = state.enterContext(expressionDef.getContext());
+        }
+        try {
+            return visitor.visitExpression(expressionDef.getExpression(), state);
         } finally {
-            state.popEvaluatedResourceStack();
             // state.enterContext.getContext() == null will result in isEnteredContext = false, which means pop() won't
             // be called
             state.exitContext(isEnteredContext);
