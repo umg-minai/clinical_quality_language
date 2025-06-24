@@ -464,27 +464,22 @@ public class State {
     }
 
     public void logDebugResult(Element node, Object result, DebugAction action) {
-        ensureDebugResult();
-        debugResult.logDebugResult(node, this.getCurrentLibrary(), result, action);
+        ensureDebugResult().logDebugResult(node, this.getCurrentLibrary(), result, action);
     }
 
     public void logDebugMessage(SourceLocator locator, String message) {
-        ensureDebugResult();
-        debugResult.logDebugError(new CqlException(message, locator, Severity.MESSAGE));
+        ensureDebugResult().logDebugError(new CqlException(message, locator, Severity.MESSAGE));
     }
 
     public void logDebugWarning(SourceLocator locator, String message) {
-        ensureDebugResult();
-        debugResult.logDebugError(new CqlException(message, locator, Severity.WARNING));
+        ensureDebugResult().logDebugError(new CqlException(message, locator, Severity.WARNING));
     }
 
     public void logDebugTrace(SourceLocator locator, String message) {
-        ensureDebugResult();
-        debugResult.logDebugError(new CqlException(message, locator, Severity.TRACE));
+        ensureDebugResult().logDebugError(new CqlException(message, locator, Severity.TRACE));
     }
 
     public void logDebugError(CqlException e) {
-        ensureDebugResult();
-        debugResult.logDebugError(e);
+        ensureDebugResult().logDebugError(e);
     }
 }
