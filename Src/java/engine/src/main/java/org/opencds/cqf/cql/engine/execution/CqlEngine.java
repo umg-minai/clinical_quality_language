@@ -237,12 +237,13 @@ public class CqlEngine {
     }
 
     private EvaluationResult evaluateExpressions(Set<String> expressions) {
-        EvaluationResult result = new EvaluationResult();
+        final var state = getState();
+        final EvaluationResult result = new EvaluationResult();
 
-        this.state.beginEvaluation();
+        state.beginEvaluation();
         try {
             for (String expression : expressions) {
-                ExpressionDef def = Libraries.resolveExpressionRef(expression, this.state.getCurrentLibrary());
+                ExpressionDef def = Libraries.resolveExpressionRef(expression, state.getCurrentLibrary());
 
                 if (def == null) {
                     throw new CqlException(String.format("Unable to resolve expression \"%s.\"", expression));
@@ -253,15 +254,18 @@ public class CqlEngine {
                 }
 
                 try {
-                    var action = getState().shouldDebug(def);
+                    final var action = state.shouldDebug(def);
                     state.pushActivationFrame(def, def.getContext());
                     try {
-                        final var object = this.evaluationVisitor.visitExpressionDef(def, this.state);
+                        final var object = this.evaluationVisitor.visitExpressionDef(def, state);
                         result.expressionResults.put(
-                                expression, new ExpressionResult(object, this.state.getEvaluatedResources()));
-                        this.state.logDebugResult(def, object, action);
+                                expression, new ExpressionResult(object, state.getEvaluatedResources()));
+                        // Do not call
+                        if (action != DebugAction.NONE) {
+                            state.logDebugResult(def, object, action);
+                        }
                     } finally {
-                        this.state.popActivationFrame();
+                        state.popActivationFrame();
                     }
                 } catch (CqlException ce) {
                     processException(ce, def);
@@ -271,10 +275,10 @@ public class CqlEngine {
                 }
             }
         } finally {
-            this.state.endEvaluation();
+            state.endEvaluation();
         }
 
-        result.setDebugResult(this.state.getDebugResult());
+        result.setDebugResult(state.getDebugResult());
 
         return result;
     }
