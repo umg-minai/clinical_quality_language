@@ -39,7 +39,7 @@ public class CqlPerformanceIT extends CqlTestBase {
     void mainSuite(Set<CqlEngine.Options> engineOptions) throws IOException, UcumException {
         VersionedIdentifier libraryId = toElmIdentifier("CqlPerformanceTest", "1");
         ZonedDateTime date =
-                ZonedDateTime.of(2018, 1, 1, 7, 0, 0, 0, TimeZone.getDefault().toZoneId());
+                ZonedDateTime.of(2019, 1, 1, 7, 0, 0, 0, TimeZone.getDefault().toZoneId());
         runPerformanceTest(libraryId, 1000.0, date, defaultCompilerOptions(), engineOptions);
     }
 
