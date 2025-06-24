@@ -1,5 +1,6 @@
 package org.opencds.cqf.cql.engine.elm.executing;
 
+import java.util.List;
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument;
 
 /*
@@ -27,24 +28,22 @@ public class IndexerEvaluator {
             return null;
         }
 
-        if (left instanceof String) {
-            if (right instanceof Integer) {
-                if ((int) right < 0 || (int) right >= ((String) left).length()) {
-                    return null;
-                }
-
-                return "" + ((String) left).charAt((int) right);
-            }
-        }
-
-        if (left instanceof Iterable) {
-            if (right instanceof Integer) {
-                int index = -1;
-                for (Object element : (Iterable<?>) left) {
-                    index++;
-                    if ((Integer) right == index) {
+        if (right instanceof Integer index) {
+            if (index < 0) {
+                return null;
+            } else if (left instanceof String string) {
+                return index < string.length() ? "" + string.charAt(index) : null;
+            } else if (left instanceof List<?> list) {
+                // If LEFT is an ArrayList, List.get() will run in O(1) as opposed to O(N) in the following case for
+                // Iterable.
+                return index < list.size() ? list.get(index) : null;
+            } else if (left instanceof Iterable<?> iterable) {
+                int i = 0;
+                for (Object element : iterable) {
+                    if (i == index) {
                         return element;
                     }
+                    ++i;
                 }
                 return null;
             }
