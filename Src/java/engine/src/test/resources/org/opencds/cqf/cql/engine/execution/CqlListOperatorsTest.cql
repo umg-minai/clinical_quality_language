@@ -27,8 +27,12 @@ define ContainsTimeFalse: { @T15:59:59.999, @T05:59:59.999, @T20:59:59.999 } con
 define ContainsNullLeft: null contains 'a'
 
 //Descendents
-define DescendentsEmptyList: (null).descendents()
 // TODO: how to call without fhirpath syntax
+define DescendentsEmptyList: (null).descendants()
+define DescendentsSomeList: {1,2,3}.descendants()
+define DescendentsNestedLists: {1,{2,3}}.descendants()
+define DescendentsNestedListAndStructure: {1,{x:2,y:3}}.descendants()
+define DescendentsAndFlatten: Flatten(({1,{2,3}}) e return e.descendants()) = {1,{2,3}}.descendants()
 
 //Distinct
 define DistinctEmptyList: distinct {}

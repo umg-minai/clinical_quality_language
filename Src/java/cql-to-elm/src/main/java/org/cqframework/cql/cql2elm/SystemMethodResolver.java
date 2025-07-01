@@ -343,18 +343,18 @@ public class SystemMethodResolver {
                 return builder.resolveFunction(null, "ConvertsToTime", getParams(target, ctx));
             case "count":
                 return builder.resolveFunction(null, "Count", getParams(target, ctx));
-            case "descendents": {
+            case "descendants": {
                 checkArgumentCount(ctx, functionName, 0);
-                Descendents descendents = of.createDescendents();
-                descendents.setSource(target);
+                Descendants descendants = of.createDescendants();
+                descendants.setSource(target);
                 Set<DataType> dataTypes = new java.util.HashSet<DataType>();
                 gatherChildTypes(target.getResultType(), true, dataTypes);
                 if (dataTypes.size() == 1) {
-                    descendents.setResultType(new ListType((DataType) dataTypes.toArray()[0]));
+                    descendants.setResultType(new ListType((DataType) dataTypes.toArray()[0]));
                 } else {
-                    descendents.setResultType(new ListType(new ChoiceType(dataTypes)));
+                    descendants.setResultType(new ListType(new ChoiceType(dataTypes)));
                 }
-                return descendents;
+                return descendants;
             }
             case "distinct":
                 return builder.resolveFunction(null, "Distinct", getParams(target, ctx));

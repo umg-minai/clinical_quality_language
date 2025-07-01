@@ -81,6 +81,8 @@ public class ChildrenEvaluator {
             addDateTime(ret, dateTime);
         } else if (source instanceof Time time) {
             addTime(ret, time);
+            // TODO(jmoringe): tuple
+            // TODO(jmoringe): this whole thing should share code with Descendants
         } else if (source instanceof Iterable<?> iterable) {
             addList(ret, iterable);
         }

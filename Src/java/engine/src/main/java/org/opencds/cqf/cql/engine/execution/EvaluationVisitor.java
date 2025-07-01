@@ -829,9 +829,9 @@ public class EvaluationVisitor extends BaseElmLibraryVisitor<Object, State> {
     }
 
     @Override
-    public Object visitDescendents(Descendents elm, State state) {
+    public Object visitDescendants(Descendants elm, State state) {
         Object source = visitExpression(elm.getSource(), state);
-        return DescendentsEvaluator.descendents(source);
+        return DescendantsEvaluator.descendants(source);
     }
 
     @Override

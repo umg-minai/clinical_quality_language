@@ -325,8 +325,8 @@ public class IdObjectFactory extends ObjectFactory {
     }
 
     @Override
-    public Descendents createDescendents() {
-        return super.createDescendents().withLocalId(nextId());
+    public Descendants createDescendants() {
+        return super.createDescendants().withLocalId(nextId());
     }
 
     @Override

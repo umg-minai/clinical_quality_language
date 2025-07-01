@@ -1691,14 +1691,14 @@ public interface ElmVisitor<T, C> {
     T visitChildren(Children elm, C context);
 
     /**
-     * Visit a Descendents. This method will be called for
-     * every node in the tree that is a Descendents.
+     * Visit a Descendants. This method will be called for
+     * every node in the tree that is a Descendants.
      *
      * @param elm     the ELM tree
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    T visitDescendents(Descendents elm, C context);
+    T visitDescendants(Descendants elm, C context);
 
     /**
      * Visit a Message. This method will be called for

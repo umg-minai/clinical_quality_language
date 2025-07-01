@@ -287,7 +287,7 @@ public abstract class BaseElmVisitor<T, C> implements ElmVisitor<T, C> {
         else if (elm instanceof IndexOf) return visitIndexOf((IndexOf) elm, context);
         else if (elm instanceof Slice) return visitSlice((Slice) elm, context);
         else if (elm instanceof Children) return visitChildren((Children) elm, context);
-        else if (elm instanceof Descendents) return visitDescendents((Descendents) elm, context);
+        else if (elm instanceof Descendants) return visitDescendants((Descendants) elm, context);
         else if (elm instanceof Message) return visitMessage((Message) elm, context);
         else if (elm instanceof UnaryExpression) return visitUnaryExpression((UnaryExpression) elm, context);
         else if (elm instanceof BinaryExpression) return visitBinaryExpression((BinaryExpression) elm, context);
@@ -2707,14 +2707,14 @@ public abstract class BaseElmVisitor<T, C> implements ElmVisitor<T, C> {
     }
 
     /**
-     * Visit a Descendents. This method will be called for
-     * every node in the tree that is a Descendents.
+     * Visit a Descendants. This method will be called for
+     * every node in the tree that is a Descendants.
      *
      * @param elm     the ELM tree
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    public T visitDescendents(Descendents elm, C context) {
+    public T visitDescendants(Descendants elm, C context) {
         T result = visitFields(elm, context);
 
         if (elm.getSource() != null) {
