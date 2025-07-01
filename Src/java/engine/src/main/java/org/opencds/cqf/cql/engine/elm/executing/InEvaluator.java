@@ -110,9 +110,9 @@ public class InEvaluator {
     private static Boolean listIn(Object left, Iterable<?> right, State state) {
         if (left == null) {
             for (Object element : right) {
-               if (element == null) {
-                   return true;
-               }
+                if (element == null) {
+                    return true;
+                }
             }
             return false;
         }
@@ -126,8 +126,7 @@ public class InEvaluator {
             for (Object element : right) {
                 // Nulls are considered equivalent in lists
                 // Other elements use equality semantics
-                if (element != null
-                    && Boolean.TRUE.equals(EquivalentEvaluator.equivalent(left, element, state))) {
+                if (element != null && Boolean.TRUE.equals(EquivalentEvaluator.equivalent(left, element, state))) {
                     return true;
                 }
             }
@@ -135,8 +134,7 @@ public class InEvaluator {
             for (Object element : right) {
                 // Nulls are considered equivalent in lists
                 // Other elements use equality semantics
-                if (element != null
-                    && Boolean.TRUE.equals(EqualEvaluator.equal(left, element, state))) {
+                if (element != null && Boolean.TRUE.equals(EqualEvaluator.equal(left, element, state))) {
                     return true;
                 }
             }

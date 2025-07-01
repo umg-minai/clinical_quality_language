@@ -32,18 +32,16 @@ public class ConvertQuantityEvaluator {
             return null;
         }
 
-        if (argument instanceof Quantity) {
+        if (argument instanceof Quantity quantity && unit instanceof String unitString) {
             if (ucumService == null) {
                 return null;
             }
             try {
                 Decimal result = ucumService.convert(
-                        new Decimal(String.valueOf(((Quantity) argument).getValue())),
-                        ((Quantity) argument).getUnit(),
-                        (String) unit);
+                        new Decimal(String.valueOf(quantity.getValue())), quantity.getUnit(), unitString);
                 return new Quantity()
                         .withValue(new BigDecimal(result.asDecimal()))
-                        .withUnit((String) unit);
+                        .withUnit(unitString);
             } catch (Exception e) {
                 return null;
             }
