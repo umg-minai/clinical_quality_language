@@ -77,12 +77,10 @@ public class EquivalentEvaluator {
                         == 0;
             }
             return leftDecimal.compareTo(rightDecimal) == 0;
-        }
-
-        if (left instanceof Iterable) {
-            return CqlList.equivalent((Iterable<?>) left, (Iterable<?>) right, state);
-        } else if (left instanceof CqlType) {
-            return ((CqlType) left).equivalent(right);
+        } else if (left instanceof Iterable<?> leftIterable) {
+            return CqlList.equivalent(leftIterable, (Iterable<?>) right, state);
+        } else if (left instanceof CqlType leftCqlType) {
+            return leftCqlType.equivalent(right);
         } else if (left instanceof String) {
             return ((String) left).equalsIgnoreCase((String) right);
         }

@@ -719,7 +719,7 @@
 			<output>true</output>
 		</test>
 		<test name="RatioEquivalent">
-			<expression>1'cm':2'cm' ~ 1'cm':2'cm'</expression>
+			<expression>1'cm':2'cm' ~ 3'cm':6'cm'</expression>
 			<output>true</output>
 		</test>
 		<test name="RatioNotEquivalent">
