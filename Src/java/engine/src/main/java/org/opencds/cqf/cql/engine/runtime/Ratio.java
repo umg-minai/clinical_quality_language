@@ -35,8 +35,8 @@ public class Ratio implements CqlType {
 
     public Boolean fullEquivalent(final Ratio other, final State state) {
         return EquivalentEvaluator.equivalent(
-                MultiplyEvaluator.multiply(this.getNumerator(), other.getDenominator()),
-                MultiplyEvaluator.multiply(other.getNumerator(), this.getDenominator()),
+                MultiplyEvaluator.multiply(this.getNumerator(), other.getDenominator(), state),
+                MultiplyEvaluator.multiply(other.getNumerator(), this.getDenominator(), state),
                 state);
     }
 

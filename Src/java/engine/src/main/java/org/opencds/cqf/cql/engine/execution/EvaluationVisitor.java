@@ -1189,7 +1189,7 @@ public class EvaluationVisitor extends BaseElmLibraryVisitor<Object, State> {
         Object left = visitExpression(elm.getOperand().get(0), state);
         Object right = visitExpression(elm.getOperand().get(1), state);
 
-        return MultiplyEvaluator.multiply(left, right);
+        return MultiplyEvaluator.multiply(left, right, state);
     }
 
     @Override
@@ -1311,7 +1311,7 @@ public class EvaluationVisitor extends BaseElmLibraryVisitor<Object, State> {
     @Override
     public Object visitProduct(Product elm, State state) {
         Object source = visitExpression(elm.getSource(), state);
-        return ProductEvaluator.product(source);
+        return ProductEvaluator.product(source, state);
     }
 
     @Override

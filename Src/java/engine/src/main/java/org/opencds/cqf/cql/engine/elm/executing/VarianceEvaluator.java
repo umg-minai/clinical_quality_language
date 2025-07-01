@@ -40,7 +40,8 @@ public class VarianceEvaluator {
                     if (element instanceof BigDecimal || element instanceof Quantity) {
                         newVals.add(MultiplyEvaluator.multiply(
                                 SubtractEvaluator.subtract(element, mean, state),
-                                SubtractEvaluator.subtract(element, mean, state)));
+                                SubtractEvaluator.subtract(element, mean, state),
+                                state));
                     } else {
                         throw new InvalidOperatorArgument(
                                 "Variance(List<Decimal>) or Variance(List<Quantity>)",
