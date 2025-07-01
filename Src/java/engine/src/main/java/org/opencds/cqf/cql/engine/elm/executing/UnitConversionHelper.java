@@ -42,6 +42,23 @@ public class UnitConversionHelper {
         return null;
     }
 
+    public static Integer compareQuantities(
+            final Quantity leftQuantity, final Quantity rightQuantity, final State state) {
+        if (leftQuantity.getValue() == null || rightQuantity.getValue() == null) {
+            return null;
+        } else {
+            var nullableCompareTo = leftQuantity.nullableCompareTo(rightQuantity);
+            if (nullableCompareTo == null) {
+                nullableCompareTo = computeWithConvertedUnits(
+                        leftQuantity,
+                        rightQuantity,
+                        (commonUnit, leftValue, rightValue) -> leftValue.compareTo(rightValue),
+                        state);
+            }
+            return nullableCompareTo;
+        }
+    }
+
     private static BigDecimal convertIfLessGranular(
             final UcumService ucumService, final BigDecimal value, final String fromUnit, final String toUnit) {
         try {

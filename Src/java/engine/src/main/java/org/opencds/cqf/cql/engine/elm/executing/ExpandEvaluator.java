@@ -87,7 +87,7 @@ public class ExpandEvaluator {
             }
             if (lessOrEqual) {
                 returnedIntervals.add(
-                        new Interval(start, true, PredecessorEvaluator.predecessor(nextStart, per), true));
+                        new Interval(start, true, PredecessorEvaluator.predecessor(nextStart, per), true, state));
                 start = nextStart;
                 nextStart = addPer(start, per, state);
             } else {
@@ -143,7 +143,7 @@ public class ExpandEvaluator {
         }
 
         // Sort the intervals so that the expansion results are returned in order
-        intervals.sort(new CqlList().valueSort);
+        intervals.sort(new CqlList(state).valueSort);
 
         return intervals;
     }

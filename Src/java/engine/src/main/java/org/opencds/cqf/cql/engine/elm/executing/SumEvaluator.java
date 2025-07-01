@@ -22,8 +22,7 @@ public class SumEvaluator {
             return null;
         }
 
-        if (source instanceof Iterable) {
-            Iterable<?> elements = (Iterable<?>) source;
+        if (source instanceof Iterable<?> elements) {
             Object sum = null;
             for (Object element : elements) {
                 if (element == null) {

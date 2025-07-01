@@ -53,12 +53,12 @@ public class AddEvaluator {
                 valueToAddPrecision = precision;
             }
 
-            if (left instanceof DateTime) {
+            if (left instanceof DateTime leftDateTime) {
                 return new DateTime(
-                        ((DateTime) left).getDateTime().plus(convertedValueToAdd, valueToAddPrecision.toChronoUnit()),
+                        leftDateTime.getDateTime().plus(convertedValueToAdd, valueToAddPrecision.toChronoUnit()),
                         precision);
-            } else if (left instanceof Date) {
-                return new Date(((Date) left).getDate().plus(convertedValueToAdd, valueToAddPrecision.toChronoUnit()))
+            } else if (left instanceof Date leftDate) {
+                return new Date(leftDate.getDate().plus(convertedValueToAdd, valueToAddPrecision.toChronoUnit()))
                         .setPrecision(precision);
             } else {
                 return new Time(

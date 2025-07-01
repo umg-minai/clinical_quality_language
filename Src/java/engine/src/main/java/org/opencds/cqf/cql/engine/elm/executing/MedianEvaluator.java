@@ -44,7 +44,7 @@ public class MedianEvaluator {
                 return null;
             }
 
-            values.sort(new CqlList().valueSort);
+            values.sort(new CqlList(state).valueSort);
 
             if (values.size() % 2 != 0) {
                 return values.get(values.size() / 2);
