@@ -3,6 +3,7 @@ package org.opencds.cqf.cql.engine.runtime;
 import org.opencds.cqf.cql.engine.elm.executing.EqualEvaluator;
 import org.opencds.cqf.cql.engine.elm.executing.EquivalentEvaluator;
 import org.opencds.cqf.cql.engine.elm.executing.MultiplyEvaluator;
+import org.opencds.cqf.cql.engine.execution.State;
 
 public class Ratio implements CqlType {
 
@@ -29,10 +30,14 @@ public class Ratio implements CqlType {
 
     @Override
     public Boolean equivalent(Object other) {
-        final var otherRatio = (Ratio) other;
+        return fullEquivalent((Ratio) other, null);
+    }
+
+    public Boolean fullEquivalent(final Ratio other, final State state) {
         return EquivalentEvaluator.equivalent(
-                MultiplyEvaluator.multiply(this.getNumerator(), otherRatio.getDenominator()),
-                MultiplyEvaluator.multiply(otherRatio.getNumerator(), this.getDenominator()));
+                MultiplyEvaluator.multiply(this.getNumerator(), other.getDenominator()),
+                MultiplyEvaluator.multiply(other.getNumerator(), this.getDenominator()),
+                state);
     }
 
     @Override
