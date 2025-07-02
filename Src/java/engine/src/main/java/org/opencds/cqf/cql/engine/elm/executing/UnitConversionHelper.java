@@ -18,26 +18,31 @@ public class UnitConversionHelper {
             final Quantity left, final Quantity right, final Computation<R> computation, final State state) {
         final var leftUnit = left.getUnit();
         final var rightUnit = right.getUnit();
+        // If the units are equal, perform the computation without any conversion.
         if (leftUnit.equals(rightUnit)) {
             return computation.compute(leftUnit, left.getValue(), right.getValue());
         } else {
+            // If the units are not equal, try to convert between the different units. Try the conversion in both
+            // directions and select the one for which the result of the computation will be expressed in the more
+            // granular unit.
             final var leftValue = left.getValue();
             final var rightValue = right.getValue();
             final var ucumService = state.getEnvironment().getLibraryManager().getUcumService();
-            final var rightConverted = convertIfMoreGranular(ucumService, rightValue, rightUnit, leftUnit);
+            final var rightConverted = convertIfLessGranular(ucumService, rightValue, rightUnit, leftUnit);
             if (rightConverted != null) {
                 return computation.compute(leftUnit, leftValue, rightConverted);
             } else {
-                final var leftConverted = convertIfMoreGranular(ucumService, leftValue, leftUnit, rightUnit);
+                final var leftConverted = convertIfLessGranular(ucumService, leftValue, leftUnit, rightUnit);
                 if (leftConverted != null) {
                     return computation.compute(rightUnit, leftConverted, rightValue);
                 }
             }
         }
+        // If the units were neither equal not convertible, don't perform the computation and return null.
         return null;
     }
 
-    private static BigDecimal convertIfMoreGranular(
+    private static BigDecimal convertIfLessGranular(
             final UcumService ucumService, final BigDecimal value, final String fromUnit, final String toUnit) {
         try {
             final var decimal = new Decimal(String.valueOf(value));

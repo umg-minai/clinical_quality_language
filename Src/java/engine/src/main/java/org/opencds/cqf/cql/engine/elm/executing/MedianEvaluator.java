@@ -51,12 +51,12 @@ public class MedianEvaluator {
             } else {
                 if (values.get(0) instanceof Integer) { // size of list is even
                     return TruncatedDivideEvaluator.div(
-                            AddEvaluator.add(values.get(values.size() / 2), values.get((values.size() / 2) - 1)),
+                            AddEvaluator.add(values.get(values.size() / 2), values.get((values.size() / 2) - 1), state),
                             2,
                             state);
                 } else if (values.get(0) instanceof BigDecimal || values.get(0) instanceof Quantity) {
                     return DivideEvaluator.divide(
-                            AddEvaluator.add(values.get(values.size() / 2), values.get((values.size() / 2) - 1)),
+                            AddEvaluator.add(values.get(values.size() / 2), values.get((values.size() / 2) - 1), state),
                             new BigDecimal("2.0"),
                             state);
                 }

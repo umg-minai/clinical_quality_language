@@ -56,13 +56,13 @@ public class Interval implements CqlType, Comparable<Interval> {
         }
     }
 
-    public static Object getSize(Object start, Object end) {
+    public static Object getSize(Object start, Object end, final State state) {
         if (start == null || end == null) {
             return null;
         }
 
         if (start instanceof Integer || start instanceof BigDecimal || start instanceof Quantity) {
-            return SubtractEvaluator.subtract(end, start);
+            return SubtractEvaluator.subtract(end, start, state);
         }
 
         throw new InvalidOperatorArgument(String.format(

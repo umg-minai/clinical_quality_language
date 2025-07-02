@@ -43,14 +43,15 @@ public class CollapseEvaluator {
             return new Interval(
                     interval.getStart(),
                     true,
-                    AddEvaluator.add(interval.getEnd(), per.getValue().intValue()),
+                    AddEvaluator.add(interval.getEnd(), per.getValue().intValue(), state),
                     true);
         } else if (interval.getPointType().getTypeName().contains("BigDecimal")) {
-            return new Interval(interval.getStart(), true, AddEvaluator.add(interval.getEnd(), per.getValue()), true);
+            return new Interval(
+                    interval.getStart(), true, AddEvaluator.add(interval.getEnd(), per.getValue(), state), true);
         }
         // Quantity, Date, DateTime, and Time
         else {
-            return new Interval(interval.getStart(), true, AddEvaluator.add(interval.getEnd(), per), true);
+            return new Interval(interval.getStart(), true, AddEvaluator.add(interval.getEnd(), per, state), true);
         }
     }
 

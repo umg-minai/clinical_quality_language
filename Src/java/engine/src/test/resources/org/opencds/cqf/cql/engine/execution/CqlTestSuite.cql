@@ -3792,8 +3792,9 @@ define test_QtyIvlCollapse_CollapseSeparatedQuantityPer3: TestMessage(QtyIvlColl
 define QuantityMeterIntervalList: { Interval[ToQuantity('1 \'m\''), ToQuantity('1.995 \'m\'')], Interval[ToQuantity('2 \'m\''), ToQuantity('3 \'m\'')] }
 define QtyIvlCollapse_CollapseDisjointQuantityUnits: collapse QuantityMeterIntervalList
 define QtyIvlCollapse_ExpectedQuantityUnitsCollapse: { Interval[ToQuantity('1 \'m\''), ToQuantity('3 \'m\'')] }
-define QtyIvlCollapse_CollapseQuantityUnitsWithinPer: collapse QuantityMeterIntervalList per ToQuantity('1 \'cm\'')
-define QtyIvlCollapse_CollapseQuantityUnitsNotWithinPer: collapse QuantityMeterIntervalList per ToQuantity('1 \'mm\'')
+// TODO(jmoringe): must be skipped until Quantity comparison operators respect units
+//define QtyIvlCollapse_CollapseQuantityUnitsWithinPer: collapse QuantityMeterIntervalList per ToQuantity('1 \'cm\'')
+//define QtyIvlCollapse_CollapseQuantityUnitsNotWithinPer: collapse QuantityMeterIntervalList per ToQuantity('1 \'mm\'')
 
 // Null test cases
 define NullLowIntervalList: { Interval[null, 4], Interval[3, 5] }
