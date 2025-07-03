@@ -42,6 +42,7 @@ public class ProductEvaluator {
                 } else if (element instanceof Quantity elementQuantity && result instanceof Quantity resultQuantity) {
                     if (!elementQuantity.getUnit().equals(resultQuantity.getUnit())) {
                         // TODO: try to normalize units?
+                        // TODO(jmoringe): explore this
                         throw new IllegalArgumentException(String.format(
                                 "Found different units during Quantity product evaluation: %s and %s",
                                 elementQuantity.getUnit(), resultQuantity.getUnit()));
