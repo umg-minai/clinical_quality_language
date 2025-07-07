@@ -33,6 +33,7 @@ public class ModeEvaluator {
 
             values.sort(new CqlList(state).valueSort);
 
+            // TODO(jmoringe): optimize; since values are sorted, a linear scan is enough
             int max = 0;
             Object mode = new Object();
             for (int i = 0; i < values.size(); ++i) {
