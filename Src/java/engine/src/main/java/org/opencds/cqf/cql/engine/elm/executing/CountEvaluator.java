@@ -1,6 +1,5 @@
 package org.opencds.cqf.cql.engine.elm.executing;
 
-import java.util.Iterator;
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument;
 
 /*
@@ -20,25 +19,15 @@ public class CountEvaluator {
         }
 
         Integer size = 0;
-
-        if (source instanceof Iterable) {
-            Iterable<?> element = (Iterable<?>) source;
-            Iterator<?> itr = element.iterator();
-
-            if (!itr.hasNext()) { // empty list
+        if (source instanceof Iterable<?> iterable) {
+            if (!iterable.iterator().hasNext()) { // empty list
                 return size;
             }
-
-            while (itr.hasNext()) {
-                Object value = itr.next();
-
-                if (value == null) { // skip null
-                    continue;
+            for (var element : iterable) {
+                if (element != null) { // skip null
+                    ++size;
                 }
-
-                ++size;
             }
-
             return size;
         }
 

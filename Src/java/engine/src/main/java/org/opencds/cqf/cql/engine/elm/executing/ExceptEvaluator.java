@@ -40,7 +40,7 @@ public class ExceptEvaluator {
             return null;
         }
 
-        if (left instanceof Interval) {
+        if (left instanceof Interval leftInterval) {
             Object leftStart = ((Interval) left).getStart();
             Object leftEnd = ((Interval) left).getEnd();
             Object rightStart = ((Interval) right).getStart();

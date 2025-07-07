@@ -52,7 +52,7 @@ public class ChildrenEvaluator {
         }
     }
 
-    private static void addList(List<Object> list, List<Object> listToProcess) {
+    private static void addList(List<Object> list, Iterable<?> listToProcess) {
         for (Object o : listToProcess) {
             list.add(children(o));
         }
@@ -71,18 +71,18 @@ public class ChildrenEvaluator {
                 || source instanceof String
                 || source instanceof Boolean) {
             ret.add(source);
-        } else if (source instanceof Quantity) {
-            addQuantity(ret, (Quantity) source);
-        } else if (source instanceof Code) {
-            addCode(ret, (Code) source);
-        } else if (source instanceof Concept) {
-            addConcept(ret, (Concept) source);
-        } else if (source instanceof DateTime) {
-            addDateTime(ret, (DateTime) source);
-        } else if (source instanceof Time) {
-            addTime(ret, (Time) source);
-        } else if (source instanceof Iterable) {
-            addList(ret, (List<Object>) source);
+        } else if (source instanceof Quantity quantity) {
+            addQuantity(ret, quantity);
+        } else if (source instanceof Code code) {
+            addCode(ret, code);
+        } else if (source instanceof Concept concept) {
+            addConcept(ret, concept);
+        } else if (source instanceof DateTime dateTime) {
+            addDateTime(ret, dateTime);
+        } else if (source instanceof Time time) {
+            addTime(ret, time);
+        } else if (source instanceof Iterable<?> iterable) {
+            addList(ret, iterable);
         }
 
         // TODO: Intervals and Tuples?

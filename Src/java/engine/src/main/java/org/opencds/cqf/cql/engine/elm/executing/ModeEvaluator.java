@@ -1,7 +1,6 @@
 package org.opencds.cqf.cql.engine.elm.executing;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument;
 import org.opencds.cqf.cql.engine.execution.State;
 import org.opencds.cqf.cql.engine.runtime.CqlList;
@@ -21,23 +20,14 @@ public class ModeEvaluator {
             return null;
         }
 
-        if (source instanceof Iterable) {
-            Iterable<?> element = (Iterable<?>) source;
-            Iterator<?> itr = element.iterator();
-
-            if (!itr.hasNext()) { // empty list
-                return null;
-            }
-
-            ArrayList<Object> values = new ArrayList<>();
-            while (itr.hasNext()) {
-                Object value = itr.next();
-                if (value != null) {
-                    values.add(value);
+        if (source instanceof Iterable<?> iterable) {
+            final var values = new ArrayList<>();
+            for (var element : iterable) {
+                if (element != null) {
+                    values.add(element);
                 }
             }
-
-            if (values.isEmpty()) { // all null
+            if (values.isEmpty()) { // all null (or empty List)
                 return null;
             }
 

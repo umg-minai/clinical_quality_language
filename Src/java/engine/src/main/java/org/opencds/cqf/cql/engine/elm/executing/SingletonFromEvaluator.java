@@ -21,8 +21,8 @@ public class SingletonFromEvaluator {
 
         Object result = null;
         boolean first = true;
-        if (operand instanceof Iterable) {
-            for (Object element : (Iterable<?>) operand) {
+        if (operand instanceof Iterable<?> iterable) {
+            for (Object element : iterable) {
                 if (first) {
                     result = element;
                     first = false;

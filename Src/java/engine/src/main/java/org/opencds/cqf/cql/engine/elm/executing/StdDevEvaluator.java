@@ -1,7 +1,6 @@
 package org.opencds.cqf.cql.engine.elm.executing;
 
 import java.math.BigDecimal;
-import java.util.List;
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument;
 import org.opencds.cqf.cql.engine.execution.State;
 import org.opencds.cqf.cql.engine.runtime.Quantity;
@@ -24,9 +23,9 @@ public class StdDevEvaluator {
             return null;
         }
 
-        if (source instanceof Iterable) {
+        if (source instanceof Iterable<?> iterable) {
 
-            if (((List<?>) source).isEmpty()) {
+            if (!iterable.iterator().hasNext()) {
                 return null;
             }
 

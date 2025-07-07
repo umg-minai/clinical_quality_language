@@ -16,9 +16,8 @@ public class FilterEvaluator {
             ret = null;
         }
 
-        if (source instanceof Iterable) {
-
-            for (Object obj : (List<?>) source) {
+        if (source instanceof Iterable<?> iterable) {
+            for (Object obj : iterable) {
                 try {
                     // Hmmm... This is hard without the alias.
                     // TODO: verify this works for all cases -> will scope always be present?
@@ -26,7 +25,7 @@ public class FilterEvaluator {
                         state.push(new Variable(elm.getScope()).withValue(obj));
                     }
 
-                    if (condition instanceof Boolean && (Boolean) condition) {
+                    if (condition instanceof Boolean conditionBoolean && conditionBoolean) {
                         ret.add(obj);
                     }
                 } finally {

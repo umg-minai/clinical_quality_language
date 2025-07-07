@@ -1,6 +1,5 @@
 package org.opencds.cqf.cql.engine.elm.executing;
 
-import java.util.Iterator;
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument;
 import org.opencds.cqf.cql.engine.execution.State;
 
@@ -29,10 +28,8 @@ public class MaxEvaluator {
             return null;
         }
 
-        if (source instanceof Iterable) {
-            Iterable<?> element = (Iterable<?>) source;
-            Iterator<?> itr = element.iterator();
-
+        if (source instanceof Iterable<?> iterable) {
+            final var itr = iterable.iterator();
             if (!itr.hasNext()) { // empty list
                 return null;
             }

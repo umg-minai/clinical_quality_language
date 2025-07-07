@@ -27,9 +27,9 @@ public class ProductEvaluator {
             return null;
         }
 
-        if (source instanceof Iterable) {
+        if (source instanceof Iterable<?> iterable) {
             Object result = null;
-            for (Object element : (Iterable<?>) source) {
+            for (Object element : iterable) {
                 if (element == null) return null;
                 if (result == null) {
                     result = element;
@@ -39,15 +39,15 @@ public class ProductEvaluator {
                         || (element instanceof Long && result instanceof Long)
                         || (element instanceof BigDecimal && result instanceof BigDecimal)) {
                     result = MultiplyEvaluator.multiply(result, element, state);
-                } else if (element instanceof Quantity && result instanceof Quantity) {
-                    if (!((Quantity) element).getUnit().equals(((Quantity) result).getUnit())) {
+                } else if (element instanceof Quantity elementQuantity && result instanceof Quantity resultQuantity) {
+                    if (!elementQuantity.getUnit().equals(resultQuantity.getUnit())) {
                         // TODO: try to normalize units?
                         throw new IllegalArgumentException(String.format(
                                 "Found different units during Quantity product evaluation: %s and %s",
-                                ((Quantity) element).getUnit(), ((Quantity) result).getUnit()));
+                                elementQuantity.getUnit(), resultQuantity.getUnit()));
                     }
-                    ((Quantity) result).setValue((BigDecimal) MultiplyEvaluator.multiply(
-                            ((Quantity) result).getValue(), ((Quantity) element).getValue(), state));
+                    resultQuantity.setValue((BigDecimal)
+                            MultiplyEvaluator.multiply(resultQuantity.getValue(), elementQuantity.getValue(), state));
                 } else {
                     throw new InvalidOperatorArgument(
                             "Product(List<Integer>), Product(List<Long>), Product(List<Decimal>) or Product(List<Quantity>)",

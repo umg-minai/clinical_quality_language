@@ -1,7 +1,6 @@
 package org.opencds.cqf.cql.engine.elm.executing;
 
 import java.util.ArrayList;
-import java.util.List;
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument;
 import org.opencds.cqf.cql.engine.execution.State;
 
@@ -23,21 +22,17 @@ public class PopulationVarianceEvaluator {
             return null;
         }
 
-        if (source instanceof Iterable) {
-
-            if (((List<?>) source).isEmpty()) {
+        if (source instanceof Iterable<?> iterable) {
+            if (!iterable.iterator().hasNext()) {
                 return null;
             }
+            final var mean = AvgEvaluator.avg(source, state);
 
-            Object mean = AvgEvaluator.avg(source, state);
-
-            List<Object> newVals = new ArrayList<>();
-
-            ((List<?>) source)
-                    .forEach(ae -> newVals.add(MultiplyEvaluator.multiply(
-                            SubtractEvaluator.subtract(ae, mean, state),
-                            SubtractEvaluator.subtract(ae, mean, state),
-                            state)));
+            final var newVals = new ArrayList<>();
+            iterable.forEach(element -> {
+                final var diff = SubtractEvaluator.subtract(element, mean, state);
+                newVals.add(MultiplyEvaluator.multiply(diff, diff, state));
+            });
 
             return AvgEvaluator.avg(newVals, state);
         }

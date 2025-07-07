@@ -35,8 +35,8 @@ public class IncludedInEvaluator {
         if (left instanceof Interval && right instanceof Interval) {
             return intervalIncludedIn((Interval) left, (Interval) right, precision, state);
         }
-        if (left instanceof Iterable && right instanceof Iterable) {
-            return listIncludedIn((Iterable<?>) left, (Iterable<?>) right, state);
+        if (left instanceof Iterable<?> leftIterable && right instanceof Iterable<?> rightIterable) {
+            return listIncludedIn(leftIterable, rightIterable, state);
         }
 
         throw new InvalidOperatorArgument(
@@ -98,11 +98,8 @@ public class IncludedInEvaluator {
         }
 
         for (Object element : left) {
-            Object in = InEvaluator.in(element, right, null, state);
-
-            if (in == null) continue;
-
-            if (!(Boolean) in) {
+            Boolean in = InEvaluator.in(element, right, null, state);
+            if (in != null && !in) {
                 return false;
             }
         }

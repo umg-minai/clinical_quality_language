@@ -960,7 +960,7 @@ public class EvaluationVisitor extends BaseElmLibraryVisitor<Object, State> {
 
     @Override
     public Object visitGeometricMean(GeometricMean elm, State state) {
-        Iterable<?> source = (Iterable<?>) visitExpression(elm.getSource(), state);
+        Object source = visitExpression(elm.getSource(), state);
         return GeometricMeanEvaluator.geometricMean(source, state);
     }
 

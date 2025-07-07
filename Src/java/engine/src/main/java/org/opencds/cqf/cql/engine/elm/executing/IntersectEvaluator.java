@@ -1,7 +1,6 @@
 package org.opencds.cqf.cql.engine.elm.executing;
 
 import java.util.ArrayList;
-import java.util.List;
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument;
 import org.opencds.cqf.cql.engine.execution.State;
 import org.opencds.cqf.cql.engine.runtime.BaseTemporal;
@@ -81,14 +80,11 @@ public class IntersectEvaluator {
             }
 
             return new Interval(max, max != null, min, min != null, state);
-        } else if (left instanceof Iterable) {
-            Iterable<?> leftArr = (Iterable<?>) left;
-            Iterable<?> rightArr = (Iterable<?>) right;
-
-            List<Object> result = new ArrayList<>();
+        } else if (left instanceof Iterable<?> leftIterable && right instanceof Iterable<?> rightIterable) {
+            final var result = new ArrayList<>();
             Boolean in;
-            for (Object leftItem : leftArr) {
-                in = InEvaluator.in(leftItem, rightArr, null, state);
+            for (Object leftItem : leftIterable) {
+                in = InEvaluator.in(leftItem, rightIterable, null, state);
                 if (in != null && in) {
                     result.add(leftItem);
                 }

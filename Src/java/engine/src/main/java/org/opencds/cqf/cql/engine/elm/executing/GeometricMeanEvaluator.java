@@ -2,7 +2,6 @@ package org.opencds.cqf.cql.engine.elm.executing;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.List;
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument;
 import org.opencds.cqf.cql.engine.execution.State;
 
@@ -23,28 +22,34 @@ If the source is null, the result is null.
 
 public class GeometricMeanEvaluator {
 
-    public static BigDecimal geometricMean(Iterable<?> source, State state) {
+    public static BigDecimal geometricMean(Object source, State state) {
         if (source == null) {
             return null;
         }
 
         // remove nulls - operation is on non-null list elements ... TODO: generify and move this to a utility class
-        List<BigDecimal> cleanSource = new ArrayList<>();
-        for (Object element : source) {
-            if (element != null) {
-                if (element instanceof BigDecimal) {
-                    cleanSource.add((BigDecimal) element);
-                } else {
-                    throw new InvalidOperatorArgument(
-                            "GeometricMean(List<Decimal>)",
-                            String.format(
-                                    "GeometricMean(%s)", element.getClass().getName()));
+        if (source instanceof Iterable<?> iterable) {
+            final var cleanSource = new ArrayList<>();
+            for (Object element : iterable) {
+                if (element != null) {
+                    if (element instanceof BigDecimal bigDecimal) {
+                        cleanSource.add(bigDecimal);
+                    } else {
+                        throw new InvalidOperatorArgument(
+                                "GeometricMean(List<Decimal>)",
+                                String.format(
+                                        "GeometricMean(%s)", element.getClass().getName()));
+                    }
                 }
             }
+            return (BigDecimal) PowerEvaluator.power(
+                    ProductEvaluator.product(cleanSource, state),
+                    DivideEvaluator.divide(
+                            new BigDecimal(1), ToDecimalEvaluator.toDecimal(CountEvaluator.count(cleanSource)), state));
+        } else {
+            throw new InvalidOperatorArgument(
+                    "GeometricMean(List<Decimal>)",
+                    String.format("GeometricMean(%s)", source.getClass().getName()));
         }
-        return (BigDecimal) PowerEvaluator.power(
-                ProductEvaluator.product(cleanSource, state),
-                DivideEvaluator.divide(
-                        new BigDecimal(1), ToDecimalEvaluator.toDecimal(CountEvaluator.count(cleanSource)), state));
     }
 }

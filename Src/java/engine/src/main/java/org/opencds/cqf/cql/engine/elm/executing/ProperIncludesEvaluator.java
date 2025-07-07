@@ -92,8 +92,7 @@ public class ProperIncludesEvaluator {
             return false;
         }
 
-        int leftCount = (int)
-                StreamSupport.stream(((Iterable<?>) left).spliterator(), false).count();
+        int leftCount = (int) StreamSupport.stream(left.spliterator(), false).count();
 
         if (right == null) {
             return leftCount > 0;
@@ -103,8 +102,7 @@ public class ProperIncludesEvaluator {
                 IncludedInEvaluator.listIncludedIn(right, left, state),
                 GreaterEvaluator.greater(
                         leftCount,
-                        (int) StreamSupport.stream(((Iterable<?>) right).spliterator(), false)
-                                .count(),
+                        (int) StreamSupport.stream(right.spliterator(), false).count(),
                         state));
     }
 }

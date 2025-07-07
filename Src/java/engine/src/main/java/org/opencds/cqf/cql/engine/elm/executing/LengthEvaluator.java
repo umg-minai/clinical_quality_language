@@ -26,10 +26,8 @@ public class LengthEvaluator {
     public static Object length(Object operand) {
         if (operand instanceof String) {
             return stringLength((String) operand);
-        }
-
-        if (operand instanceof Iterable) {
-            return listLength((Iterable<?>) operand);
+        } else if (operand instanceof Iterable<?> iterable) {
+            return listLength(iterable);
         }
 
         throw new InvalidOperatorArgument(
@@ -50,15 +48,14 @@ public class LengthEvaluator {
             return 0;
         }
 
-        return (int) StreamSupport.stream(((Iterable<?>) operand).spliterator(), false)
-                .count();
+        return (int) StreamSupport.stream(operand.spliterator(), false).count();
     }
 
     public static Object internalEvaluate(Object operand, Length length, State state) {
 
         // null operand case
-        if (length.getOperand() instanceof As) {
-            if (((As) length.getOperand()).getAsTypeSpecifier() instanceof NamedTypeSpecifier) {
+        if (length.getOperand() instanceof As as) {
+            if (as.getAsTypeSpecifier() instanceof NamedTypeSpecifier) {
                 return stringLength((String) operand);
             } else {
                 return listLength((Iterable<?>) operand);

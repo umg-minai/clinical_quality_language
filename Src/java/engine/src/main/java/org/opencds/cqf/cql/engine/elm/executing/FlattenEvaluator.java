@@ -17,9 +17,9 @@ public class FlattenEvaluator {
             return null;
         }
 
-        if (operand instanceof Iterable) {
+        if (operand instanceof Iterable<?> iterable) {
             List<Object> resultList = new ArrayList<>();
-            for (Object element : (Iterable<?>) operand) {
+            for (Object element : iterable) {
                 if (element == null) {
                     resultList.add(null);
                 } else {

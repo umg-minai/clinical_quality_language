@@ -25,23 +25,20 @@ public class VarianceEvaluator {
             return null;
         }
 
-        if (source instanceof Iterable) {
+        if (source instanceof Iterable<?> iterable) {
 
-            if (((List<?>) source).isEmpty()) {
+            if (!iterable.iterator().hasNext()) {
                 return null;
             }
 
             Object mean = AvgEvaluator.avg(source, state);
 
             List<Object> newVals = new ArrayList<>();
-
-            for (Object element : (Iterable<?>) source) {
+            for (Object element : iterable) {
                 if (element != null) {
                     if (element instanceof BigDecimal || element instanceof Quantity) {
-                        newVals.add(MultiplyEvaluator.multiply(
-                                SubtractEvaluator.subtract(element, mean, state),
-                                SubtractEvaluator.subtract(element, mean, state),
-                                state));
+                        final var diff = SubtractEvaluator.subtract(element, mean, state);
+                        newVals.add(MultiplyEvaluator.multiply(diff, diff, state));
                     } else {
                         throw new InvalidOperatorArgument(
                                 "Variance(List<Decimal>) or Variance(List<Quantity>)",

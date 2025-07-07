@@ -23,8 +23,7 @@ public class AvgEvaluator {
             return null;
         }
 
-        if (source instanceof Iterable) {
-            Iterable<?> elements = (Iterable<?>) source;
+        if (source instanceof Iterable<?> elements) {
             Object avg = null;
             int size = 1;
 

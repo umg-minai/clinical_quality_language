@@ -1,6 +1,5 @@
 package org.opencds.cqf.cql.engine.elm.executing;
 
-import java.util.Iterator;
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument;
 import org.opencds.cqf.cql.engine.execution.State;
 
@@ -29,28 +28,19 @@ public class MinEvaluator {
             return null;
         }
 
-        if (source instanceof Iterable) {
-            Iterable<?> element = (Iterable<?>) source;
-            Iterator<?> itr = element.iterator();
-
-            if (!itr.hasNext()) { // empty list
-                return null;
-            }
-
-            Object min = itr.next();
-            while (min == null && itr.hasNext()) {
-                min = itr.next();
-            }
-            while (itr.hasNext()) {
-                Object value = itr.next();
-
-                if (value == null) { // skip null
+        if (source instanceof Iterable<?> iterable) {
+            Object min = null;
+            for (var element : iterable) {
+                if (element == null) {
                     continue;
                 }
-
-                Boolean less = LessEvaluator.less(value, min, state);
-                if (less != null && less) {
-                    min = value;
+                if (min == null) {
+                    min = element;
+                    continue;
+                }
+                final var isLess = LessEvaluator.less(element, min, state);
+                if (isLess != null && isLess) {
+                    min = element;
                 }
             }
             return min;

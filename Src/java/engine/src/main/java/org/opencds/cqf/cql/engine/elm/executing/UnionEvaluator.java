@@ -92,13 +92,12 @@ public class UnionEvaluator {
     public static Object union(Object left, Object right, State state) {
         if (left instanceof Interval || right instanceof Interval) {
             return unionInterval((Interval) left, (Interval) right, state);
-        } else if (left instanceof Iterable || right instanceof Iterable) {
-            return unionIterable((Iterable<?>) left, (Iterable<?>) right, state);
+        } else if (left instanceof Iterable<?> leftIterable && right instanceof Iterable<?> rightIterable) {
+            return unionIterable(leftIterable, rightIterable, state);
         }
 
         var leftName = left != null ? left.getClass().getName() : "<unknown>";
         var rightName = right != null ? right.getClass().getName() : "<unknown>";
-
         throw new InvalidOperatorArgument(
                 "Union(Interval<T>, Interval<T>) or Union(List<T>, List<T>)",
                 String.format("Union(%s, %s)", leftName, rightName));
