@@ -155,6 +155,10 @@
 			<expression>10.0 'g' / 5</expression>
 			<output>2.0'g'</output>
 		</test>
+		<test name="Divide10Q0I">
+			<expression>10.0 'g' / 0</expression>
+			<output>null</output>
+		</test>
 		<!-- TODO -->
 	</group>
 	<group name="Floor">

@@ -79,7 +79,10 @@ public class DivideEvaluator {
             return new Quantity().withValue(resultValue).withUnit(resultUnit);
         } else if (left instanceof Quantity && right instanceof BigDecimal) {
             BigDecimal value = divideHelper(((Quantity) left).getValue(), (BigDecimal) right, state);
-            return new Quantity().withValue(Value.verifyPrecision(value, null)).withUnit(((Quantity) left).getUnit());
+            if (value == null) {
+                return null;
+            }
+            return new Quantity().withValue(value).withUnit(((Quantity) left).getUnit());
         } else if (left instanceof Interval leftInterval && right instanceof Interval rightInterval) {
             return new Interval(
                     divide(leftInterval.getStart(), rightInterval.getStart(), state),
