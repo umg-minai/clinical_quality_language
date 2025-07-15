@@ -423,7 +423,7 @@ public class Cql2ElmVisitor extends CqlPreprocessorElmCommonVisitor {
             cd.setDisplay(parseString(ctx.displayClause().STRING()));
         }
 
-        cd.setResultType(libraryBuilder.resolveTypeName("Concept"));
+        cd.setResultType(libraryBuilder.resolveTypeName("System", "Concept"));
         libraryBuilder.addConcept(cd);
 
         return cd;
