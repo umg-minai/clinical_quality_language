@@ -1161,11 +1161,11 @@ public class SimpleElmEngine {
             return false;
         }
 
-        // Descendents
-        if (left instanceof Descendents) {
-            if (right instanceof Descendents) {
-                Descendents leftArg = (Descendents) left;
-                Descendents rightArg = (Descendents) right;
+        // Descendants
+        if (left instanceof Descendants) {
+            if (right instanceof Descendants) {
+                Descendants leftArg = (Descendants) left;
+                Descendants rightArg = (Descendants) right;
                 return expressionsEqual(leftArg.getSource(), rightArg.getSource());
             }
 
