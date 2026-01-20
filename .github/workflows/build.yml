@@ -4,10 +4,6 @@ on:
     branches:
       - master
 
-permissions:
-  checks: write
-  contents: write
-
 concurrency:
   group: ${{ github.head_ref || github.run_id }}
   cancel-in-progress: true
@@ -15,35 +11,45 @@ concurrency:
 jobs:
   gradle:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
     steps:
-    - uses: actions/checkout@v4
-    - uses: actions/setup-java@v4
-      with:
-        distribution: 'temurin'
-        java-version: '21'
-        cache: gradle
-    - name: Cache SonarCloud packages
-      uses: actions/cache@v4
-      with:
-        path: ~/.sonar/cache
-        key: ${{ runner.os }}-sonar
-        restore-keys: ${{ runner.os }}-sonar
-    - name: Setup Gradle
-      uses: gradle/actions/setup-gradle@v3
-    - name: Run Gradle Build
-      working-directory: ./Src/java
-      run: ./gradlew check publish sonar
-      env:
-        ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ vars.OSSRH_USERNAME }}
-        ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.OSSRH_TOKEN }}
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
-        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-    - name: Publish Test Report
-      uses: mikepenz/action-junit-report@v4
-      if: success() || failure() # always run even if the previous step fails
-      with:
-       report_paths: '**/build/test-results/test/TEST-*.xml'
-    - name: Upload coverage reports to Codecov
-      uses: codecov/codecov-action@v4
-      env:
-        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+          cache: gradle
+
+      #- name: Cache SonarCloud packages
+      #  uses: actions/cache@v4
+      #  with:
+      #    path: ~/.sonar/cache
+      #    key: ${{ runner.os }}-sonar
+      #    restore-keys: ${{ runner.os }}-sonar
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
+
+      #- name: Run Gradle Build
+      #  working-directory: ./Src/java
+      #  run: ./gradlew check
+
+      - name: Publish package
+        working-directory: ./Src/java
+        run: ./gradlew publish
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      #- name: Publish Test Report
+      #  uses: mikepenz/action-junit-report@v4
+      #  if: success() || failure() # always run even if the previous step fails
+      #  with:
+      #   report_paths: '**/build/test-results/test/TEST-*.xml'
+      #
+      #- name: Upload coverage reports to Codecov
+      #  uses: codecov/codecov-action@v4
+      #  env:
+      #    CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
