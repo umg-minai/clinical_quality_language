@@ -97,11 +97,8 @@ public class QueryEvaluator {
 
     public static void sortResult(
             Query elm, List<Object> result, State state, ElmLibraryVisitor<Object, State> visitor) {
-
         SortClause sortClause = elm.getSort();
-
         if (sortClause != null) {
-
             for (SortByItem byItem : sortClause.getBy()) {
 
                 if (byItem instanceof ByExpression) {
@@ -218,6 +215,7 @@ public class QueryEvaluator {
 
         if (elm.getReturn() != null
                 && elm.getReturn().isDistinct()
+                && result.size() > 1
                 && !state.getEngineOptions().contains(CqlEngine.Options.EnableHedisCompatibilityMode)) {
             result = DistinctEvaluator.distinct(result, state);
         }
@@ -226,9 +224,11 @@ public class QueryEvaluator {
             result = evaluateAggregate(elm.getAggregate(), state, visitor, result);
         }
 
-        sortResult(elm, result, state, visitor);
+        if (result.size() > 1) {
+            sortResult(elm, result, state, visitor);
+        }
 
-        if ((result == null || result.isEmpty()) && !sourceIsList) {
+        if (result.isEmpty() && !sourceIsList) {
             return null;
         }
 
