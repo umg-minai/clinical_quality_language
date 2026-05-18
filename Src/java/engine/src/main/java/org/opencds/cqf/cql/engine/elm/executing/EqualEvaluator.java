@@ -51,7 +51,8 @@ public class EqualEvaluator {
             return ((Interval) right).equal(left);
         }
 
-        if (!left.getClass().equals(right.getClass())) {
+        if (!(right.getClass().isAssignableFrom(left.getClass())
+                || left.getClass().isAssignableFrom(right.getClass()))) {
             return false;
         } else if (left instanceof Boolean
                 || left instanceof Integer
