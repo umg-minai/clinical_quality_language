@@ -95,11 +95,13 @@ public class RetrieveEvaluator {
             // TODO: We probably shouldn't eagerly load this, but we need to track
             // this throughout the engine and only add it to the list when it's actually used
             var evaluatedResource = state.getEvaluatedResources();
-            if (result instanceof List) {
-                evaluatedResource.addAll((List<?>) result);
-            } else {
-                for (var o : result) {
-                    evaluatedResource.add(o);
+            if (evaluatedResource != null) {
+                if (result instanceof List<?> list) {
+                    evaluatedResource.addAll(list);
+                } else {
+                    for (var o : result) {
+                        evaluatedResource.add(o);
+                    }
                 }
             }
         } finally {

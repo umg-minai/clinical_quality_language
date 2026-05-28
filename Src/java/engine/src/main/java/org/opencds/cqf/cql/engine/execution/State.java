@@ -79,10 +79,13 @@ public class State {
         this(environment, new HashSet<>());
     }
 
-    public State(Environment environment, Set<CqlEngine.Options> engineOptions) {
+    public State(final Environment environment, final Set<CqlEngine.Options> engineOptions) {
         this.environment = requireNonNull(environment);
         this.engineOptions = requireNonNull(engineOptions);
         this.setEvaluationDateTime(ZonedDateTime.now());
+        this.evaluatedResourceStack = engineOptions.contains(CqlEngine.Options.TrackEvaluatedResources)
+            ? new ArrayDeque<>()
+            : null;
     }
 
     private final Cache cache = new Cache();
@@ -96,7 +99,7 @@ public class State {
 
     private final Deque<ActivationFrame> stack = new ArrayDeque<>();
 
-    private final Deque<HashSet<Object>> evaluatedResourceStack = new ArrayDeque<>();
+    private final Deque<HashSet<Object>> evaluatedResourceStack;
 
     private final Map<String, Object> parameters = new HashMap<>();
     private Map<String, Object> contextValues = new HashMap<>();
@@ -391,35 +394,40 @@ public class State {
     }
 
     public Set<Object> getEvaluatedResources() {
-        if (evaluatedResourceStack.isEmpty()) {
+        if (this.evaluatedResourceStack == null) {
+            return null;
+        } else if (this.evaluatedResourceStack.isEmpty()) {
             throw new IllegalStateException("Attempted to get the evaluatedResource stack when it's empty");
+        } else {
+            return this.evaluatedResourceStack.peek();
         }
-
-        return this.evaluatedResourceStack.peek();
     }
 
     public void clearEvaluatedResources() {
-        this.evaluatedResourceStack.clear();
-        this.pushEvaluatedResourceStack();
+        if (this.evaluatedResourceStack != null) {
+            this.evaluatedResourceStack.clear();
+            this.pushEvaluatedResourceStack();
+        }
     }
 
     public void pushEvaluatedResourceStack() {
-        evaluatedResourceStack.push(new HashSet<>());
+        if (this.evaluatedResourceStack != null) {
+            this.evaluatedResourceStack.push(new HashSet<>());
+        }
     }
 
     // serves pop and merge to the down
     public void popEvaluatedResourceStack() {
-        if (evaluatedResourceStack.isEmpty()) {
+        if (this.evaluatedResourceStack == null) {
+        } else if (this.evaluatedResourceStack.isEmpty()) {
             throw new IllegalStateException("Attempted to pop the evaluatedResource stack when it's empty");
-        }
-
-        if (evaluatedResourceStack.size() == 1) {
+        } else if (this.evaluatedResourceStack.size() == 1) {
             throw new IllegalStateException("Attempted to pop the evaluatedResource stack when only the root remains");
+        } else {
+            final var objects = this.evaluatedResourceStack.pop();
+            final var set = this.evaluatedResourceStack.peek();
+            set.addAll(objects);
         }
-
-        Set<Object> objects = evaluatedResourceStack.pop();
-        var set = evaluatedResourceStack.peek();
-        set.addAll(objects);
     }
 
     public Object resolveAlias(String name) {

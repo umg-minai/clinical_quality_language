@@ -38,6 +38,9 @@ public class CqlEngine {
         // ratio for certain elements such as expression and function
         // definitions and retrieves.
         EnableProfiling,
+        // Controls whether evaluated resources are tracked in
+        // EvaluationResult instances.
+        TrackEvaluatedResources,
     }
 
     private final Environment environment;

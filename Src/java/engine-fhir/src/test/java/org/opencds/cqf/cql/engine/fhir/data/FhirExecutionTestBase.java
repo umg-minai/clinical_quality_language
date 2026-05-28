@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URLDecoder;
 import java.util.ArrayList;
+import java.util.Set;
 import org.cqframework.cql.cql2elm.*;
 import org.cqframework.cql.cql2elm.quick.FhirLibrarySourceProvider;
 import org.cqframework.cql.elm.tracking.TrackBack;
@@ -35,7 +36,8 @@ public abstract class FhirExecutionTestBase {
     }
 
     public CqlEngine getEngine() {
-        return new CqlEngine(getEnvironment());
+        return new CqlEngine(getEnvironment(),
+                             Set.of(CqlEngine.Options.TrackEvaluatedResources));
     }
 
     private static LibraryManager libraryManager;
