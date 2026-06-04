@@ -83,9 +83,8 @@ public class State {
         this.environment = requireNonNull(environment);
         this.engineOptions = requireNonNull(engineOptions);
         this.setEvaluationDateTime(ZonedDateTime.now());
-        this.evaluatedResourceStack = engineOptions.contains(CqlEngine.Options.TrackEvaluatedResources)
-            ? new ArrayDeque<>()
-            : null;
+        this.evaluatedResourceStack =
+                engineOptions.contains(CqlEngine.Options.TrackEvaluatedResources) ? new ArrayDeque<>() : null;
     }
 
     private final Cache cache = new Cache();
