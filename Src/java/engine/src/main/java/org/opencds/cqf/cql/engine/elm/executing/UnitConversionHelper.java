@@ -1,9 +1,7 @@
 package org.opencds.cqf.cql.engine.elm.executing;
 
 import java.math.BigDecimal;
-import org.fhir.ucum.Decimal;
-import org.fhir.ucum.UcumException;
-import org.fhir.ucum.UcumService;
+import org.cqframework.cql.cql2elm.UnitConverter;
 import org.opencds.cqf.cql.engine.execution.State;
 import org.opencds.cqf.cql.engine.runtime.Quantity;
 
@@ -27,12 +25,12 @@ public class UnitConversionHelper {
             // granular unit.
             final var leftValue = left.getValue();
             final var rightValue = right.getValue();
-            final var ucumService = state.getEnvironment().getLibraryManager().getUcumService();
-            final var rightConverted = convertIfLessGranular(ucumService, rightValue, rightUnit, leftUnit);
+            final var unitConverter = state.getEnvironment().getLibraryManager().getUnitConverter();
+            final var rightConverted = convertIfLessGranular(unitConverter, rightValue, rightUnit, leftUnit);
             if (rightConverted != null) {
                 return computation.compute(leftUnit, leftValue, rightConverted);
             } else {
-                final var leftConverted = convertIfLessGranular(ucumService, leftValue, leftUnit, rightUnit);
+                final var leftConverted = convertIfLessGranular(unitConverter, leftValue, leftUnit, rightUnit);
                 if (leftConverted != null) {
                     return computation.compute(rightUnit, leftConverted, rightValue);
                 }
@@ -60,17 +58,14 @@ public class UnitConversionHelper {
     }
 
     private static BigDecimal convertIfLessGranular(
-            final UcumService ucumService, final BigDecimal value, final String fromUnit, final String toUnit) {
-        try {
-            final var decimal = new Decimal(String.valueOf(value));
-            final var convertedDecimal = ucumService.convert(decimal, fromUnit, toUnit);
-            // If the units are equal but spelled differently (for example 'g/m' vs 'g.m-1'), the numeric value may be
-            // the same as before, so accept convertedDecimal and decimal being equal as "less granular".
-            if (convertedDecimal != null && convertedDecimal.comparesTo(decimal) >= 0) {
-                return new BigDecimal(convertedDecimal.asDecimal());
-            }
-        } catch (final UcumException ignored) {
+            final UnitConverter unitConverter, final BigDecimal value, final String fromUnit, final String toUnit) {
+        final var converted = unitConverter.convert(value, fromUnit, toUnit);
+        // If the units are equal but spelled differently (for example 'g/m' vs 'g.m-1'), the numeric value may be
+        // the same as before, so accept convertedDecimal and decimal being equal as "less granular".
+        if (converted != null && converted.compareTo(value) >= 0) {
+            return converted;
+        } else {
+            return null;
         }
-        return null;
     }
 }

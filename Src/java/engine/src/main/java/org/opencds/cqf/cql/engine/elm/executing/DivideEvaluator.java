@@ -61,7 +61,7 @@ public class DivideEvaluator {
                 resultValue = divideHelper(leftValue, rightValue, state);
                 resultUnit = leftUnit;
             } else {
-                final var ucumService =
+                final var ucumService = // TODO: use UnitConverter
                         state.getEnvironment().getLibraryManager().getUcumService();
                 try {
                     final var result = ucumService.divideBy(

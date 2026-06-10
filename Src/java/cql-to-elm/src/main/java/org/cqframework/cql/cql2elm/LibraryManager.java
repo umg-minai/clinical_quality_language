@@ -55,6 +55,13 @@ public class LibraryManager {
 
     private UcumService ucumService;
 
+    /**
+     * The {@link UnitConverter} instance obtains conversion factors from the {@link UcumService} instance} for unit
+     * conversions that permit a simple linear conversion and caches those factors.  Subsequent conversions for which a
+     * factor is already stored can then be performed much more efficiently.
+     */
+    private UnitConverter unitConverter;
+
     private static final LibraryContentType[] supportedContentTypes = {
         LibraryContentType.JSON, LibraryContentType.XML, LibraryContentType.CQL
     };
@@ -107,12 +114,11 @@ public class LibraryManager {
         return this.compiledLibraries;
     }
 
-    public UcumService getUcumService() {
+    public synchronized UcumService getUcumService() {
         if (this.ucumService == null) {
             this.ucumService = getDefaultUcumService();
         }
-
-        return ucumService;
+        return this.ucumService;
     }
 
     protected synchronized UcumService getDefaultUcumService() {
@@ -120,9 +126,16 @@ public class LibraryManager {
             return new UcumEssenceService(UcumEssenceService.class.getResourceAsStream("/ucum-essence.xml"));
         } catch (UcumException e) {
             logger.warn("Error creating shared UcumService", e);
+            return null;
         }
+    }
 
-        return null;
+    public synchronized UnitConverter getUnitConverter() {
+        if (this.unitConverter == null) {
+            this.ucumService = getUcumService();
+            this.unitConverter = new UnitConverter(this.ucumService);
+        }
+        return this.unitConverter;
     }
 
     public void setUcumService(UcumService ucumService) {

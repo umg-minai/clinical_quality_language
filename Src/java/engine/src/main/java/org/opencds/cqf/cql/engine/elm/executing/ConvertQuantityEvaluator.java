@@ -1,8 +1,6 @@
 package org.opencds.cqf.cql.engine.elm.executing;
 
-import java.math.BigDecimal;
-import org.fhir.ucum.Decimal;
-import org.fhir.ucum.UcumService;
+import org.cqframework.cql.cql2elm.UnitConverter;
 import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument;
 import org.opencds.cqf.cql.engine.runtime.Quantity;
 
@@ -27,30 +25,26 @@ import org.opencds.cqf.cql.engine.runtime.Quantity;
 
 public class ConvertQuantityEvaluator {
 
-    public static Object convertQuantity(Object argument, Object unit, UcumService ucumService) {
+    public static Object convertQuantity(final Object argument, final Object unit, final UnitConverter unitConverter) {
         if (argument == null || unit == null) {
             return null;
         }
-
-        if (argument instanceof Quantity quantity && unit instanceof String unitString) {
-            if (ucumService == null) {
-                return null;
-            }
-            try {
-                Decimal result = ucumService.convert(
-                        new Decimal(String.valueOf(quantity.getValue())), quantity.getUnit(), unitString);
-                return new Quantity()
-                        .withValue(new BigDecimal(result.asDecimal()))
-                        .withUnit(unitString);
-            } catch (Exception e) {
-                return null;
-            }
+        if (!(argument instanceof Quantity quantity) || !(unit instanceof String toUnit)) {
+            throw new InvalidOperatorArgument(
+                    "ConvertQuantity(Quantity, String)",
+                    String.format(
+                            "ConvertQuantity(%s, %s)",
+                            argument.getClass().getName(), unit.getClass().getName()));
+        }
+        final var fromUnit = quantity.getUnit();
+        if (fromUnit.equals(toUnit)) {
+            return quantity;
+        }
+        if (unitConverter == null) {
+            return null;
         }
 
-        throw new InvalidOperatorArgument(
-                "ConvertQuantity(Quantity, String)",
-                String.format(
-                        "ConvertQuantity(%s, %s)",
-                        argument.getClass().getName(), unit.getClass().getName()));
+        final var convertedValue = unitConverter.convert(quantity.getValue(), fromUnit, toUnit);
+        return convertedValue != null ? new Quantity().withValue(convertedValue).withUnit(toUnit) : null;
     }
 }

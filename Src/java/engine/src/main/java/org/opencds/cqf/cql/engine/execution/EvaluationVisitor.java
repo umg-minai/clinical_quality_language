@@ -725,7 +725,7 @@ public class EvaluationVisitor extends BaseElmLibraryVisitor<Object, State> {
         Object argument = visitExpression(elm.getOperand().get(0), state);
         Object unit = visitExpression(elm.getOperand().get(1), state);
         return ConvertQuantityEvaluator.convertQuantity(
-                argument, unit, state.getEnvironment().getLibraryManager().getUcumService());
+                argument, unit, state.getEnvironment().getLibraryManager().getUnitConverter());
     }
 
     @Override
