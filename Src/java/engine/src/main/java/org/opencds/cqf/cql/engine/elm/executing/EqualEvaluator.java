@@ -34,33 +34,18 @@ If either argument is null, or contains null elements, the result is null.
 */
 
 public class EqualEvaluator {
-    public static Boolean equal(Object left, Object right, State state) {
+
+    public static Boolean equal(final Object left, final Object right, final State state) {
         if (left == null || right == null) {
             return null;
-        }
-
-        if (left instanceof Iterable && right instanceof Iterable) {
-            return CqlList.equal((Iterable<?>) left, (Iterable<?>) right, state);
-        }
-
-        if (left instanceof Interval && right instanceof Integer) {
-            return ((Interval) left).equal(right);
-        }
-
-        if (right instanceof Interval && left instanceof Integer) {
-            return ((Interval) right).equal(left);
-        }
-
-        if (!(right.getClass().isAssignableFrom(left.getClass())
-                || left.getClass().isAssignableFrom(right.getClass()))) {
-            return false;
-        } else if (left instanceof Boolean
-                || left instanceof Integer
-                || left instanceof Long
-                || left instanceof String) {
-            return left.equals(right);
-        } else if (left instanceof BigDecimal && right instanceof BigDecimal) {
-            return ((BigDecimal) left).compareTo((BigDecimal) right) == 0;
+        } else if (left instanceof Iterable<?> leftIterable && right instanceof Iterable<?> rightIterable) {
+            return CqlList.equal(leftIterable, rightIterable, state);
+        } else if (left instanceof Interval leftInterval && right instanceof Integer rightInteger) {
+            return leftInterval.equal(rightInteger);
+        } else if (right instanceof Interval rightInterval && left instanceof Integer leftInteger) {
+            return rightInterval.equal(leftInteger);
+        } else if (left instanceof BigDecimal leftBigDecimal && right instanceof BigDecimal rightBigDecimal) {
+            return leftBigDecimal.compareTo(rightBigDecimal) == 0;
         } else if (left instanceof Quantity leftQuantity && right instanceof Quantity rightQuantity) {
             // Try the Quantity.equal method which implements "simple" rules such as the equality of alternate
             // spellings for "week" or "month".
@@ -79,18 +64,25 @@ public class EqualEvaluator {
             }
         } else if (left instanceof CqlType leftCqlType && right instanceof CqlType) {
             return leftCqlType.equal(right);
-        }
-
-        if (state != null) {
+        } else if (left instanceof Boolean
+                || left instanceof Integer
+                || left instanceof Long
+                || left instanceof String
+                || (state != null && state.canUseEquals(left))) {
+            return left.equals(right);
+        } else if (!(right.getClass().isAssignableFrom(left.getClass())
+                || left.getClass().isAssignableFrom(right.getClass()))) {
+            return false;
+        } else if (state != null) {
             return state.getEnvironment().objectEqual(left, right);
+        } else {
+            throw new InvalidOperatorArgument(String.format(
+                    "Equal(%s, %s) requires Context and state was null",
+                    left.getClass().getName(), right.getClass().getName()));
         }
-
-        throw new InvalidOperatorArgument(String.format(
-                "Equal(%s, %s) requires Context and state was null",
-                left.getClass().getName(), right.getClass().getName()));
     }
 
-    public static Boolean equal(Object left, Object right) {
+    public static Boolean equal(final Object left, final Object right) {
         return equal(left, right, null);
     }
 }
