@@ -11,7 +11,11 @@ import org.opencds.cqf.cql.engine.debug.DebugResult;
 import org.opencds.cqf.cql.engine.debug.SourceLocator;
 import org.opencds.cqf.cql.engine.exception.CqlException;
 import org.opencds.cqf.cql.engine.exception.Severity;
+import org.opencds.cqf.cql.engine.runtime.CqlType;
 import org.opencds.cqf.cql.engine.runtime.DateTime;
+import org.opencds.cqf.cql.engine.runtime.Quantity;
+import org.opencds.cqf.cql.engine.runtime.Ratio;
+import org.opencds.cqf.cql.engine.runtime.Tuple;
 
 /**
  * State represents the internal state of the CqlEngine.
@@ -106,6 +110,8 @@ public class State {
     private ZonedDateTime evaluationZonedDateTime;
     private DateTime evaluationDateTime;
 
+    private final HashMap<Class<?>, Boolean> canUseEquals = new HashMap<>();
+
     private DebugMap debugMap;
 
     public Cache getCache() {
@@ -189,6 +195,27 @@ public class State {
     @Deprecated
     public void setWindows(Deque<Deque<Variable>> windows) {
         throw new RuntimeException("Not supported");
+    }
+
+    public boolean canUseEquals(final Object object) {
+        if (object instanceof Boolean
+                || object instanceof Integer
+                || object instanceof Long
+                || object instanceof String) {
+            return true;
+        } else if (object instanceof Iterable<?>
+                || object instanceof Tuple
+                || object instanceof Quantity
+                || object instanceof Ratio
+                || object instanceof CqlType) {
+            return false;
+        } else {
+            return canUseEquals.computeIfAbsent(object.getClass(), clazz -> {
+                final var packageName = clazz.getPackage().getName();
+                final var dataProvider = getEnvironment().resolveDataProvider(packageName);
+                return dataProvider.canUseEquals(clazz);
+            });
+        }
     }
 
     public DebugMap getDebugMap() {
