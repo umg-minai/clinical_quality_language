@@ -133,6 +133,17 @@ public interface ModelResolver {
     void setValue(Object target, String path, Object value);
 
     /**
+     * Return true if {@link Object#equals} can be used instead of {@link #objectEqual} on instances of {@code clazz}.
+     *
+     * @param clazz The class for which to indicate whether {@link Object#equals} is equivalent to {@link #objectEqual}
+     * @return {@code true} is {@link Object#equals} may be called instead of {@link ModelResolver#objectEqual} on
+     *         instances of {@code clazz} and {@code false} otherwise.
+     */
+    default boolean canUseEquals(final Class<?> clazz) {
+        return false;
+    }
+
+    /**
      * Compare two objects for equality
      *
      * @param left left hand side of the equality expression

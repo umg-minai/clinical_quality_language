@@ -79,6 +79,11 @@ public class CompositeDataProvider implements DataProvider {
     }
 
     @Override
+    public boolean canUseEquals(Class<?> clazz) {
+        return this.modelResolver.canUseEquals(clazz);
+    }
+
+    @Override
     public Boolean objectEqual(Object left, Object right) {
         return this.modelResolver.objectEqual(left, right);
     }

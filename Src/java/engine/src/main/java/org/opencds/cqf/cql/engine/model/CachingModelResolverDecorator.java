@@ -113,6 +113,11 @@ public class CachingModelResolverDecorator implements ModelResolver {
     }
 
     @Override
+    public boolean canUseEquals(Class<?> clazz) {
+        return this.innerResolver.canUseEquals(clazz);
+    }
+
+    @Override
     public Boolean objectEqual(Object left, Object right) {
         return this.innerResolver.objectEqual(left, right);
     }

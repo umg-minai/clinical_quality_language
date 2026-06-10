@@ -1,20 +1,14 @@
 package org.opencds.cqf.cql.engine.data;
 
+import org.opencds.cqf.cql.engine.model.BaseModelResolver;
+import org.opencds.cqf.cql.engine.runtime.*;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
-import org.opencds.cqf.cql.engine.model.BaseModelResolver;
-import org.opencds.cqf.cql.engine.runtime.Code;
-import org.opencds.cqf.cql.engine.runtime.CqlType;
-import org.opencds.cqf.cql.engine.runtime.Date;
-import org.opencds.cqf.cql.engine.runtime.DateTime;
-import org.opencds.cqf.cql.engine.runtime.Interval;
-import org.opencds.cqf.cql.engine.runtime.Quantity;
-import org.opencds.cqf.cql.engine.runtime.Time;
-import org.opencds.cqf.cql.engine.runtime.Tuple;
 
 public class SystemDataProvider extends BaseModelResolver implements DataProvider {
 
@@ -239,6 +233,14 @@ public class SystemDataProvider extends BaseModelResolver implements DataProvide
             throw new IllegalArgumentException(
                     String.format("Could not create an instance of class %s.", clazz.getName()));
         }
+    }
+
+    @Override
+    public boolean canUseEquals(final Class<?> clazz) {
+        return clazz == Boolean.class
+                || clazz == Integer.class
+                || clazz == Long.class
+                || clazz == String.class;
     }
 
     @Override
